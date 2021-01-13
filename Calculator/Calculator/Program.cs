@@ -20,6 +20,7 @@ namespace Calculator
             Console.WriteLine("lommeregner. Skriv dit nummer en efter en.");
             Console.WriteLine("For at få resultatet skal du skrive = lige efter tallet.");
 
+
             do
             {
                 string word = GetCounter(counter);
