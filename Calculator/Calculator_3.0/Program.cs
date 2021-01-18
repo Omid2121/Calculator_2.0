@@ -118,40 +118,93 @@ namespace Calculator
                     }
                     catch
                     {
-                        Console.WriteLine("Fout in formaat van getal.");
                     }
                     return token_value.NUMBER;
                 default:
 
-                    Console.WriteLine("Bad token.");
+                    Console.WriteLine("Dårligt symbol.");
                    return token_value.NUMBER;
             }
         }     
-
     }
 
     class Parser : Scanner
     {
-        public Parser()
-        {
-            SymbolTable.Add("pi", Math.PI);
-            SymbolTable.Add("e", Math.E);
-        }
-
-
         public double prim()
         {
-
+            switch (curr_tok)
+            {
+                case token_value.NAME:
+                    if (get_token() == token_value.ASSIGN)
+                    {
+                        string remember = name_string;
+                        curr_tok = get_token();
+                        number_value = expr();
+                        if (!SymbolTable.ContainsKey(remember))
+                        {
+                            SymbolTable.Add(remember, number_value);
+                        }
+                        else
+                        {
+                            SymbolTable[remember] = number_value;
+                        }
+                        return number_value;
+                    }
+                    if (SymbolTable.TryGetValue(name_string, out number_value))
+                    {
+                        return number_value;
+                    }
+                    return number_value;
+                case token_value.NUMBER:
+                    curr_tok = get_token();
+                    return number_value;
+                case token_value.MINUS:
+                    curr_tok = get_token();
+                    return -prim();
+                default:
+                    Console.WriteLine("Forventet primær");
+                    return 0.0;
+            }
         }
 
         public double term()
         {
-          
+            double left = prim();
+            while (true)
+                switch (curr_tok)
+                {
+                    case token_value.MUL:
+                        curr_tok = get_token();
+                        left *= prim();
+                        break;
+                    case token_value.DIV:
+                        curr_tok = get_token();
+                        double d = prim();
+                        if (d == 0) { Console.WriteLine("Opdel med 0"); return double.NaN; }
+                        left /= d;
+                        break;
+                    default:
+                        return left;
+                }
         }
 
         public double expr()
         {
-            
+            double left = term();
+            while (true)
+                switch (curr_tok)
+                {
+                    case token_value.PLUS:
+                        curr_tok = get_token();
+                        left += term();
+                        break;
+                    case token_value.MINUS:
+                        curr_tok = get_token();
+                        left -= term();
+                        break;
+                    default:
+                        return left;
+                }
         }
     }
 }
