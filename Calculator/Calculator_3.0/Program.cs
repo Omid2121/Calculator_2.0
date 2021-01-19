@@ -18,6 +18,8 @@ namespace Calculator
                     Parse.InitScan();
                     Parse.InputLine = Console.ReadLine();
                     Parse.curr_tok = Parse.get_token();
+
+                    if (Parse.curr_tok == Parser.token_value.PRINT) continue;
                     Console.WriteLine(Parse.expr());
                 }
             }
@@ -28,7 +30,8 @@ namespace Calculator
             NAME, NUMBER,
             PLUS = '+', MINUS = '-',
             MUL = '*', DIV = '/',
-            ASSIGN = '=',
+            PRINT = ';', ASSIGN = '=',
+            LPAREN = '(', RPAREN = ')',
         };
 
         public token_value curr_tok; 
@@ -45,8 +48,22 @@ namespace Calculator
         {
             set
             {
-                string line = value + "\n";
-                StringToParse = line.ToCharArray();
+                    string line = value + "\n";
+                    StringToParse = line.ToCharArray();               
+            }
+        }
+
+        public bool FindLeftParentesis()
+        {
+            char ch;
+            try
+            {
+
+            }
+            catch (Exception)
+            {
+
+                
             }
         }
 
@@ -81,11 +98,14 @@ namespace Calculator
             switch (ch)
             {
                 case '\n':
+                    curr_tok = token_value.PRINT;
                     return curr_tok;
                 case '*':
                 case '/':
                 case '+':
                 case '-':
+                case '(':
+                case ')':
                 case '=':
                     curr_tok = (token_value)(ch);
                     return curr_tok;
@@ -118,12 +138,15 @@ namespace Calculator
                     }
                     catch
                     {
+                        Console.WriteLine("Fout in formaat van getal.");
                     }
                     return token_value.NUMBER;
                 default:
 
                     Console.WriteLine("Dårligt symbol.");
-                   return token_value.NUMBER;
+                    //return token_value.NUMBER;
+                    return token_value.PRINT;
+
             }
         }     
     }
