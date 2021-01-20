@@ -49,7 +49,7 @@ namespace Calculator
             set
             {
                     string line = value + "\n";
-                    StringToParse = line.ToCharArray();               
+                StringToParse = line.ToCharArray();
             }
         }
 
@@ -58,12 +58,16 @@ namespace Calculator
             char ch;
             try
             {
-
+                do
+                {
+                    ch = GetChar();
+                }
+                while (!ch.Equals('('));
+                return true;
             }
             catch (Exception)
             {
-
-                
+                return false;
             }
         }
 
@@ -144,9 +148,7 @@ namespace Calculator
                 default:
 
                     Console.WriteLine("Dårligt symbol.");
-                    //return token_value.NUMBER;
                     return token_value.PRINT;
-
             }
         }     
     }
@@ -184,6 +186,13 @@ namespace Calculator
                 case token_value.MINUS:
                     curr_tok = get_token();
                     return -prim();
+                case token_value.LPAREN:
+                    curr_tok = get_token();
+                    double e = expr();
+                    if (curr_tok != token_value.RPAREN) {return 0.0; }
+                    curr_tok = get_token();
+                    return e;
+
                 default:
                     Console.WriteLine("Forventet primær");
                     return 0.0;
