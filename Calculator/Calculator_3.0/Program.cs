@@ -14,13 +14,13 @@ namespace Calculator
                 Parser Parse = new Parser();
                 while (true)    
                 {
-                    Console.Write("Skriv din ligning: ");
+                    Console.Write("Skriv din ligning og tryk på Enter for at få resultatet: ");
                     Parse.InitScan();
                     Parse.InputLine = Console.ReadLine();
                     Parse.curr_tok = Parse.get_token();
 
                     if (Parse.curr_tok == Parser.token_value.PRINT) continue;
-                    Console.WriteLine(Parse.expr());
+                    Console.WriteLine("Resultatet: " + Parse.expr());
                 }
             }
         }
@@ -53,6 +53,7 @@ namespace Calculator
             }
         }
 
+        //Metoden finder venstre parentes.
         public bool FindLeftParentesis()
         {
             char ch;
@@ -125,6 +126,7 @@ namespace Calculator
                 case '9':
                 case '.':
                 case ',':
+
                     if (ch == '.') ch = ',';
                     numberSB.Append(ch);
                     ch = GetChar();
@@ -199,6 +201,7 @@ namespace Calculator
             }
         }
 
+        //Metoden er til multiplikation og division.
         public double term()
         {
             double left = prim();
@@ -220,6 +223,7 @@ namespace Calculator
                 }
         }
 
+        //Metoden er til addition og subtraktion.
         public double expr()
         {
             double left = term();
